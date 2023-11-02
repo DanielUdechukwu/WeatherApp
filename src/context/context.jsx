@@ -1,16 +1,18 @@
 import React, { useState, useContext } from "react"
 
-const productContext = React.createContext();
+const weatherContext = React.createContext();
 
-export const ProductContextProvider = ({ children }) => {
-  const [cart, setCart] = useState([])
+export const WeatherContextProvider = ({ children }) => {
+  // const [isLoading, setIsLoading] = useState(false)
+  // const [isClicked, setIsClicked] = useState(false)
+  const [backgroundImage, setBackgroundImage] = useState({})
   return(
-    <productContext.Provider value={{ cart, setCart }}>
+    <weatherContext.Provider value={{ backgroundImage, setBackgroundImage }}>
       {children}
-    </productContext.Provider>
+    </weatherContext.Provider>
   )
 };
 
 export const useGlobalContext = () => {
-  return useContext(productContext)
+  return useContext(weatherContext)
 };

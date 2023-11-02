@@ -4,9 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
-.scroll-set {
-
+.bg-opac::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
 }
+
+.city-detail{
+  background: rgba(184,182,182,.15);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px #1f26875e;
+}
+
+/* .popup {
+  height: calc(100vh - 4rem);
+} */
 
 .scroll-set::-webkit-scrollbar {
   display: none !important; /* For Chrome, Safari, and newer versions of Edge */
