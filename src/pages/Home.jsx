@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const API_Key = '22b3541a55542c8f6f9fe906196620ce'
-  const {backgroundImage, setBackgroundImage} = useGlobalContext()
   const {userWeatherData, setUserWeatherData} = useGlobalContext()
   const {cityData, setCityData} = useGlobalContext()
   const [isLoading, setIsLoading] = useState(false)
@@ -71,10 +70,6 @@ const Home = () => {
 
   let imgURL = `https://openweathermap.org/img/wn/${userWeatherData.icon}@2x.png`
 
-  const getBackgroundImage = () => {
-    return {backgroundImage: 'url(/src/assets/cloudy.jpg)'}
-  }
-
   //Get input from input field
   const getInput = (event) => {
     setInputVal(event.target.value)
@@ -90,7 +85,7 @@ const Home = () => {
         humidity: res.data.main.humidity,
         windSpeed: res.data.wind.speed,
         name: res.data.name,
-        weather: res.data.weather[0].description,
+        weather: res.data.weather[0].main,
         icon: res.data.weather[0].icon,
         precipitation: '41%',
         pressure: res.data.main.pressure,
@@ -136,37 +131,42 @@ const Home = () => {
   }
   
   return(
-    <div className="font-Jost min-h-screen text-white flex justify-between" style={getBackgroundImage()}>
-      <div className="w-[65%] pl-14 pt-10 h-[35rem] flex flex-col justify-between">
-        <p className="ml-10 mt-6 text-lg font-semibold">Weather-Wiz</p>
+    <div className="font-Jost xl:min-h-screen text-white xl:flex xl:justify-between" style={
+      userWeatherData.weather === 'Clear' 
+      ? {backgroundImage: 'url(/src/assets/clear-sky.jpg)'}
+      : userWeatherData.weather === 'Clouds'
+      ? {backgroundImage: 'url(/src/assets/cloudy.jpg)'}
+      : {backgroundImage: 'url(/src/assets/rainy.jpg)'}
+    }>
+      <div className="w-[90%] sm:w-[80%] md:w-[85%] h-[21rem] sm:h-[19rem] mx-auto xl:w-[65%] xl:pl-14 xl:pt-10 xl:h-[35rem] xl:flex xl:flex-col xl:justify-between">
+        <p className="py-4 sm:pt-12 sm:pb-8 text-lg xl:ml-10 xl:mt-6 xl:text-lg font-semibold">Weather-Wiz</p>
         { isLoading ?
-          <div>
-            <p className="w-[80%] text-2xl font-semibold ml-10">Failed to fetch weather of current location. Check your internet connectivity or enable your location </p>
+          <div className="w-[90%] sm:w-[80%]">
+            <p className="w-full sm:text-xl text-md font-semibold xl:w-[80%] xl:text-2xl xl:font-semibold xl:ml-10">Failed to fetch weather of current location. Check your internet connectivity or enable your location </p>
           </div>
             :
-          <div className="flex items-center gap-4 ml-10">
-            <h1 className="text-[6rem] font-bold">{userWeatherData.temp_max}°</h1>
-            <div className="w-[40%]">
-              <p className="text-2xl font-bold">{userWeatherData.name}</p>
-              {/* <p className="text-md font-semibold">22:14 PM - Saturday, October 28, 2023</p> */}
-              {hours > 11 ? <p className="text-md font-semibold">{hours}:{minutes} PM - {dayName}, {monthName} {date}, {year}</p> : <p className="text-md font-semibold">{hours}:{minutes} AM - {dayName}, {monthName} {date}, {year}</p>}
+          <div className="sm:flex sm:gap-4 sm:items-center xl:flex xl:items-center xl:gap-4 xl:ml-10">
+            <h1 className="text-7xl sm:text-8xl sm:font-bold sm:w-[50%] md:text-left font-semibold text-center mb-8 md:mb-0 xl:text-[6rem] xl:font-bold">{userWeatherData.temp_max}°</h1>
+            <div className="sm:w-[20%] md:w-[40%] md:items-start flex flex-col items-center justify-center font-semibold xl:w-[40%]">
+              <p className="text-2xl xl:text-2xl xl:font-bold">{userWeatherData.name}</p>
+              {hours > 11 ? <p className="pb-2 xl:text-md xl:font-semibold">{hours}:{minutes} PM - {dayName}, {monthName} {date}, {year}</p> : <p className="xl:text-md xl:font-semibold">{hours}:{minutes} AM - {dayName}, {monthName} {date}, {year}</p>}
             </div>
-            <div className="flex flex-col items-center">
+            <div className="sm:w-[10%] md:items-start flex flex-col items-center">
               <img className="h-10" src={imgURL} alt="" />
-              <p className="text-xl font-bold">{userWeatherData.weather}</p>
+              <p className="text-2xl xl:text-xl font-bold">{userWeatherData.weather}</p>
             </div>
           </div>
         }
       </div>
 
-      <div className="pt-16 w-[35%] px-6 shadow-xl backdrop-blur-lg bg-transparent">
+      <div className="px-4 md:px-8 sm:pt-14 pt-12 xl:pt-16 xl:w-[35%] xl:px-6 shadow-xl backdrop-blur-lg bg-transparent">
         <div className="bg-white rounded-md px-2 flex gap-2 items-center">
           <input className="bg-transparent border-none outline-none py-4 pl-3 w-full text-black placeholder:text-gray-600" type="text" placeholder="Search for a city" value={inputVal} onChange={getInput} />
           <Link to="/search">
             <button onClick={SearchedCity} className="bg-[#0077be] rounded-md py-2 px-2">Search</button>
           </Link>
         </div>
-        <div className="mt-10 border-b-[1px]">
+        <div className="mt-10 border-b-[1px] border-b-gray-400">
           <p>Your Previous Searches</p>
           {history.length === 0 ? <p>No Searches Yet</p> : ''}
           {/* Search Data */}
@@ -182,7 +182,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="my-5">
+        <div className="xl:mt-4 my-5 sm:py-6 sm:my-0">
           <h3 className="text-xl font-semibold mb-3">Current Location Weather Detail</h3>
           <div className="mb-3 flex justify-between items-center">
             <p className="text-xl font-semibold">Humidity</p>
@@ -197,8 +197,8 @@ const Home = () => {
             <p className="text-xl font-semibold">{userWeatherData.windSpeed} m/s</p>
           </div>
           {/* Replicate into 3 places */}
-          <div className="my-7">
-            <button className="bg-white text-blue-600 py-3 px-7 rounded-md border border-blue-600 shadow-sm">View Saved Locations</button>
+          <div className="xl:mt-8">
+            <button className="mb-7 mt-4 bg-white text-blue-600 py-3 px-7 rounded-md border border-blue-600 shadow-sm">View Saved Locations</button>
           </div>
         </div>
       </div>

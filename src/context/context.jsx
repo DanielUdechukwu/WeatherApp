@@ -3,10 +3,7 @@ import React, { useState, useContext } from "react"
 const weatherContext = React.createContext();
 
 export const WeatherContextProvider = ({ children }) => {
-  // const [isLoading, setIsLoading] = useState(false)
-  // const [isClicked, setIsClicked] = useState(false)
-  const [backgroundImage, setBackgroundImage] = useState({})
-  // const [inputVal, setInputVal] = useState('')
+  const [hideSaved, setHideSaved] = useState(false)
   const [userWeatherData, setUserWeatherData] = useState({
     temp_max: '- -',
     temp_min: '- -',
@@ -31,12 +28,12 @@ export const WeatherContextProvider = ({ children }) => {
   })
   return(
     <weatherContext.Provider value={{
-      backgroundImage,
-      setBackgroundImage,
       userWeatherData,
       setUserWeatherData,
       cityData,
       setCityData,
+      hideSaved,
+      setHideSaved,
       }}>
       {children}
     </weatherContext.Provider>

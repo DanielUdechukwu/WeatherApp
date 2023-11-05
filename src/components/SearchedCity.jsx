@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import RightArrow from '../assets/arrow-left.svg'
-import Clouds from '../assets/cloud-drizzle.svg'
 import { useGlobalContext } from "../context/context";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import SavedSearch from "./Saved";
 
 const Popup = () => {
-  const {backgroundImage, setBackgroundImage} = useGlobalContext()
   const {cityData, setCityData} = useGlobalContext()
+  const {hideSaved, setHideSaved} = useGlobalContext()
   const currentDate = new Date()
   const year = currentDate.getFullYear()
   const month = currentDate.getMonth()
@@ -19,15 +18,22 @@ const Popup = () => {
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   let monthName = monthArr[month] 
   let dayName = days[day]
-  
-  const getBackgroundImage = () => {
-    return {backgroundImage: 'url(/src/assets/cloudy.jpg)'}
-  }
 
   let cityIcon = `https://openweathermap.org/img/wn/${cityData.icon}@2x.png`
+  console.log(cityData.weather)
+
+  const toggleSaved = () => {
+    setHideSaved(!hideSaved)
+  }
 
   return (
-    <div className="font-Jost min-h-screen text-white flex justify-between" style={getBackgroundImage()}>
+    <div className="font-Jost min-h-screen text-white flex justify-between relative" style={
+      cityData.weather === 'Clear' 
+      ? {backgroundImage: 'url(/src/assets/clear-sky.jpg)'}
+      : cityData.weather === 'Clouds'
+      ? {backgroundImage: 'url(/src/assets/cloudy.jpg)'}
+      : {backgroundImage: 'url(/src/assets/rainy.jpg)'}
+    }>
       <div className="h-screen flex items-center justify-center w-full bg-opac relative">
         <div className="w-[60%] popup shadow-2xl rounded-2xl py-8 px-[4rem] absolute city-detail">
           <Link to="/">
@@ -42,14 +48,14 @@ const Popup = () => {
               {hours > 11 ? <p className="text-md font-semibold">{hours}:{minutes} PM - {dayName}, {monthName} {date}, {year}</p> : <p className="text-md font-semibold">{hours}:{minutes} AM - {dayName}, {monthName} {date}, {year}</p>}
             </div>
             <div className="">
-              <button className="bg-[#0077be] text-lg py-2 px-6 rounded-md">Save Location</button>
+              <button onClick={toggleSaved} className="bg-[#0077be] text-lg py-2 px-6 rounded-md">Save Location</button>
             </div>
           </div>
 
           <div className="flex justify-between">
             <div className="flex items-center gap-5 w-2/4 border-r-2 border-gray-200">
-              <div>
-                <img className="h-[6rem]" src={cityIcon} alt="" />
+              <div className="h-[6rem] w-[8rem]">
+                <img className="h-full w-full" src={cityIcon} alt="" />
               </div>
               <div className="flex flex-col justify-center items-center px-1">
                 <p className="text-6xl font-bold">{cityData.temp_max}&deg;</p>
@@ -93,6 +99,8 @@ const Popup = () => {
           </div>
         </div>
       </div>
+
+      <SavedSearch />
     </div>
   )
 }
