@@ -8,21 +8,13 @@ import { Link } from "react-router-dom";
 const Home = () => {
   const API_Key = '22b3541a55542c8f6f9fe906196620ce'
   const {backgroundImage, setBackgroundImage} = useGlobalContext()
-  const [userWeatherData, setUserWeatherData] = useState({
-    temp_max: '- -',
-    temp_min: '- -',
-    humidity: '- -',
-    windSpeed: '- -',
-    name: '- -',
-    weather: '- -',
-    icon: '',
-    precipitation: '',
-    pressure: ''
-  })
+  const {userWeatherData, setUserWeatherData} = useGlobalContext()
+  const {cityData, setCityData} = useGlobalContext()
   const [isLoading, setIsLoading] = useState(false)
   const [inputVal, setInputVal] = useState('')
-  const [searchHistory, setSearchHistory] = useState([])
   const [isClicked, setIsClicked] = useState(false)
+  const [history, setHistory] = useState([])
+  const KEY = "history"
 
   const currentDate = new Date()
   const year = currentDate.getFullYear()
@@ -45,9 +37,11 @@ const Home = () => {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
-          console.log(position)
+          // console.log(position)
 
           const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lon=${longitude}&lat=${latitude}&units=metric&appid=${API_Key}`)
+
+          console.log(response.data)
 
           if (response.status === 200){
             setIsLoading(false)
@@ -66,6 +60,13 @@ const Home = () => {
     } catch (error) {
       console.error('Error fetching location:', error);
     }
+
+    const existingHistory = localStorage.getItem(KEY)
+    if (existingHistory) {
+      const histories = existingHistory.split(",")
+      setHistory(histories)
+    }
+
   }, [])
 
   let imgURL = `https://openweathermap.org/img/wn/${userWeatherData.icon}@2x.png`
@@ -83,22 +84,55 @@ const Home = () => {
     try{
       const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?appid=${API_Key}&q=${inputVal}`)
       console.log(res.data)
+      setCityData({
+        temp_max: res.data.main.temp_max,
+        temp_min: res.data.main.temp_min,
+        humidity: res.data.main.humidity,
+        windSpeed: res.data.wind.speed,
+        name: res.data.name,
+        weather: res.data.weather[0].description,
+        icon: res.data.weather[0].icon,
+        precipitation: '41%',
+        pressure: res.data.main.pressure,
+      })
     }catch(error){
       console.log(error)
     }
   }
 
+  const addToHistory = () => {
+    const existingHistory = localStorage.getItem(KEY)
+
+    if (existingHistory?.split(",").includes(inputVal)) return
+
+    let updatedHistory = ""
+    if (existingHistory) {
+      updatedHistory = existingHistory + "," + inputVal
+    }else {
+      updatedHistory = inputVal
+    }
+
+    const histories = updatedHistory.split(",")
+    localStorage.setItem(KEY, updatedHistory)
+    setHistory(histories)
+  }
+
   const SearchedCity = () => {
     console.log("clicked")
     setIsClicked(true)
-    setSearchHistory(prevItems => [...prevItems, inputVal])
+    // setHistory(prevItems => [...prevItems, inputVal])
+    addToHistory()
     setInputVal('')
     getSearchedLoaction()
   }
 
   const delSearchHistory = (index) => {
-    setSearchHistory(prevItems => prevItems.filter((item, itemIndex) => itemIndex !== index));
-    console.log(searchHistory)
+    // setHistory(prevItems => prevItems.filter((item, itemIndex) => itemIndex !== index));
+    console.log(history)
+    const existingHistory = localStorage.getItem(KEY)
+    const updatedList = history.filter((_, i) => i !== index);
+    localStorage.setItem(KEY, updatedList);
+    setHistory(updatedList);
   }
   
   return(
@@ -134,14 +168,14 @@ const Home = () => {
         </div>
         <div className="mt-10 border-b-[1px]">
           <p>Your Previous Searches</p>
-          {searchHistory.length === 0 ? <p>No Searches Yet</p> : ''}
+          {history.length === 0 ? <p>No Searches Yet</p> : ''}
           {/* Search Data */}
           <div className="h-[7rem] overflow-y-scroll scroll-set">
-            {searchHistory.map((cities, index) => {
+            {history.map((cities, index) => {
               return(
                 <div key={index} className="my-2 ml-2 flex justify-between items-center">
                   <p className="text-xl">{cities}</p>
-                  <img onClick={() => delSearchHistory(index)} className="h-9 p-1 rounded-md bg-[#ccc]" src={x} alt="" />
+                  <img onClick={() => delSearchHistory(index)} className="h-9 p-1 rounded-md cursor-pointer  bg-[#ccc]" src={x} alt="" />
                 </div>
               )
             })}
