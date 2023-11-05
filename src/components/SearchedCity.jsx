@@ -3,6 +3,9 @@ import RightArrow from '../assets/arrow-left.svg'
 import { useGlobalContext } from "../context/context";
 import { Link } from "react-router-dom";
 import SavedSearch from "./Saved";
+import Clouds from "../assets/cloudy.jpg"
+import Rain from "../assets/rainy.jpg"
+import Clear from "../assets/clear-sky.jpg"
 
 const Popup = () => {
   const {cityData, setCityData} = useGlobalContext()
@@ -29,10 +32,10 @@ const Popup = () => {
   return (
     <div className="font-Jost min-h-screen text-white flex justify-between relative" style={
       cityData.weather === 'Clear' 
-      ? {backgroundImage: 'url(/src/assets/clear-sky.jpg)'}
+      ? {backgroundImage: `url(${Clear})`}
       : cityData.weather === 'Clouds'
-      ? {backgroundImage: 'url(/src/assets/cloudy.jpg)'}
-      : {backgroundImage: 'url(/src/assets/rainy.jpg)'}
+      ? {backgroundImage: `url(${Clouds})`}
+      : {backgroundImage: `url(${Rain})`}
     }>
       <div className="h-screen flex items-center justify-center w-full bg-opac relative">
         <div className="w-[60%] popup shadow-2xl rounded-2xl py-8 px-[4rem] absolute city-detail">

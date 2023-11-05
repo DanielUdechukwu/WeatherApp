@@ -4,6 +4,9 @@ import x from "../assets/x-mark.svg"
 import axios from 'axios'
 import { useGlobalContext } from "../context/context";
 import { Link } from "react-router-dom";
+import Clouds from "../assets/cloudy.jpg"
+import Rain from "../assets/rainy.jpg"
+import Clear from "../assets/clear-sky.jpg"
 
 const Home = () => {
   const API_Key = '22b3541a55542c8f6f9fe906196620ce'
@@ -133,10 +136,10 @@ const Home = () => {
   return(
     <div className="font-Jost xl:min-h-screen text-white xl:flex xl:justify-between" style={
       userWeatherData.weather === 'Clear' 
-      ? {backgroundImage: 'url(/src/assets/clear-sky.jpg)'}
+      ? {backgroundImage: `url(${Clear})`}
       : userWeatherData.weather === 'Clouds'
-      ? {backgroundImage: 'url(/src/assets/cloudy.jpg)'}
-      : {backgroundImage: 'url(/src/assets/rainy.jpg)'}
+      ? {backgroundImage: `url(${Clouds})`}
+      : {backgroundImage: `url(${Rain})`}
     }>
       <div className="w-[90%] sm:w-[80%] md:w-[85%] h-[21rem] sm:h-[19rem] mx-auto xl:w-[65%] xl:pl-14 xl:pt-10 xl:h-[35rem] xl:flex xl:flex-col xl:justify-between">
         <p className="py-4 sm:pt-12 sm:pb-8 text-lg xl:ml-10 xl:mt-6 xl:text-lg font-semibold">Weather-Wiz</p>
