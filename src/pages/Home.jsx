@@ -185,7 +185,7 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="xl:mt-4 my-5 sm:py-6 sm:my-0">
+        <div className="my-5 sm:py-6 sm:my-0">
           <h3 className="text-xl font-semibold mb-3">Current Location Weather Detail</h3>
           <div className="mb-3 flex justify-between items-center">
             <p className="text-xl font-semibold">Humidity</p>
@@ -200,7 +200,7 @@ const Home = () => {
             <p className="text-xl font-semibold">{userWeatherData.windSpeed} m/s</p>
           </div>
           {/* Replicate into 3 places */}
-          <div className="xl:mt-8">
+          <div className="xl:mt-6">
             <button className="mb-7 mt-4 bg-white text-blue-600 py-3 px-7 rounded-md border border-blue-600 shadow-sm">View Saved Locations</button>
           </div>
         </div>
